@@ -1,0 +1,62 @@
+imports:
+
+
+# Network imports --------------------------------------
+
+# VPC-1 - Europe West2 Region-London, hosting up to 6 Windows Server instances
+- path: vpc-network-1.jinja
+# We want to create our own subnets and firewall 
+# rules to give secure access to SSH ports etc.
+- path: subnet-a.jinja 
+- path: firewall-1-template.jinja
+
+# VPC-2 - Europe West3 Region-Frankfurt, hosting up to 6 Debian Server instances
+- path: vpc-network-2.jinja
+- path: subnet-b.jinja
+- path: firewall-2-template.jinja
+
+- path: network-resources.jinja
+
+
+
+
+
+# VM imports -------------------------------------------
+- path: vm-template-1.jinja
+# Provide Authorised access to the web front end VM - Note linked to this project
+- path: iam-access.jinja
+
+- path: sql-server-1.jinja
+
+- path: vm-template-2.jinja
+- path: sql-server-2.jinja
+
+- path: instance-template-1.jinja
+- path: instance-group-1.jinja
+
+
+# 6 Debian Serverinstances for the VPC-2 netowrk 
+- path: instance-template-2.jinja
+- path: instance-group-2.jinja
+
+
+
+
+- path: compute-resources.jinja
+
+
+
+
+
+# The resources for the network instances and compute instances 
+# have been placed into there own custom jinja files to keep
+# the config YAML as clean as possible # Note - this is where 
+# the idividual resources and properties can be found.  
+resources:
+- name: network-resources
+  type: network-resources.jinja
+
+- name: compute-resources
+  type: compute-resources.jinja
+
+

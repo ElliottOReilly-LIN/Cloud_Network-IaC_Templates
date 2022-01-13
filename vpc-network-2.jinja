@@ -1,0 +1,10 @@
+resources:
+- name: vpc-network-2
+  type: compute.v1.network
+  properties:
+    decription: Frankfurt Branch - VPC Network to host a Debian VM instance group
+    region: europe-west3-c
+    routingMode: GLOBAL
+      # Global routing allows me to dynamically learn routes 
+      # to and from both regions with a single VPN 
+    autoCreateSubnetworks: false

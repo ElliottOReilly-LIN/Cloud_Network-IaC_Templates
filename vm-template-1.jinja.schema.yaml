@@ -1,0 +1,15 @@
+info:
+  title: VM Instance 
+  author: Elliott O'Reilly - Project Id: cmp3747m-oreilly-17666843
+  description: Schema for VM with 2 persistent disks attached, 1 SSD and 1 HDD
+  version: 0.1
+imports:
+  - path: vm-template-1.jinja
+required:
+  - zone
+properties:
+  zone:
+    default: europe-west2-b
+    type: string
+    description: London (Western Europe)
+

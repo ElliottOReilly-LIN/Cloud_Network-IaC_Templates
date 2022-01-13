@@ -1,0 +1,18 @@
+resources:
+- name: subnet-b
+  type: compute.v1.subnetwork
+  properties:
+    enableFlowLogs: true
+    # Subnet range in the Frankfurt region
+    ipCidrRange: 10.156.0.0/20
+    network: $(ref.vpc-network-2.selfLink)
+    privateIpGoogleAccess: true
+    region: europe-west3
+    secondaryIpRanges: []
+    mtu: 1460
+   # Allow the creation of flow logs to monitor the data flow
+    logConfig:
+      aggregationInterval: INTERVAL_1_MIN
+      enable: true
+      flowSampling: 0.5
+      metadata: INCLUDE_ALL_METADATA

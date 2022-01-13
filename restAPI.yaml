@@ -1,0 +1,38 @@
+This is the REST request with the parameters that you have selected.
+POST https://www.googleapis.com/compute/beta/projects/cmp3747m-oreilly-17666843/regions/europe-west2/instanceGroupManagers
+{
+  "name": "instance-group-1",
+  "instanceTemplate": "projects/cmp3747m-oreilly-17666843/global/instanceTemplates/instance-template-1",
+  "baseInstanceName": "instance-group-1",
+  "targetSize": 1,
+  "distributionPolicy": {
+    "zones": [
+      {
+        "zone": "projects/cmp3747m-oreilly-17666843/zones/europe-west2-a"
+      },
+      {
+        "zone": "projects/cmp3747m-oreilly-17666843/zones/europe-west2-b"
+      },
+      {
+        "zone": "projects/cmp3747m-oreilly-17666843/zones/europe-west2-c"
+      }
+    ]
+  }
+}
+
+POST https://www.googleapis.com/compute/beta/projects/cmp3747m-oreilly-17666843/regions/europe-west2/autoscalers
+{
+  "name": "instance-group-1",
+  "target": "projects/cmp3747m-oreilly-17666843/regions/europe-west2/instanceGroupManagers/instance-group-1",
+  "region": "europe-west2",
+  "kind": "compute#autoscaler",
+  "autoscalingPolicy": {
+    "cpuUtilization": {
+      "utilizationTarget": 0.6
+    },
+    "mode": "ON",
+    "coolDownPeriodSec": 60,
+    "minNumReplicas": 1,
+    "maxNumReplicas": 6
+  }
+}

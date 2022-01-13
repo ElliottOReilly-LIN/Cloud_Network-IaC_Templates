@@ -1,0 +1,40 @@
+resources: 
+- name: instance-template-debian
+  type: compute.v1.instanceTemplate
+  properties:
+    project: cmp3747m-oreilly-17666843
+    properties:
+      machineType: e2-medium
+      canIpForward: true
+      scheduling:
+        automaticRestart: true
+        onHostMaintenance: MIGRATE
+        preemptible: false
+      tags: 
+        items: [
+          http-server,
+          https-server]
+
+      disks:
+        - type: PERSISTENT
+          boot: true
+          mode: READ_WRITE
+          autoDelete: true
+          deviceName: instance-template-2
+          initializeParams: 
+            sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-10-buster-v20201014
+            diskType: pd-standard
+            diskSizeGb: 10
+
+      networkInterfaces:
+        - network: {{ properties["network"] }}
+          subnetwork: {{ properties["subnetwork"] }}
+          accessConfigs:        
+              kind: compute#accessConfig
+              name: External NAT
+              type: ONE_TO_ONE_NAT
+              networkTier: PREMIUM
+
+      serviceAccounts:
+            - email: default
+

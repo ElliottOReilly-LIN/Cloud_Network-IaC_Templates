@@ -1,0 +1,69 @@
+# This instance belongs to London head office and as such will have SSD 
+# Persistant disk, as well as standadard HHD for backup. This VM Template 
+# also contains a number of environment variables resources captured from the YAML file 
+
+# Setup varible names for muliple use
+
+{% set PDSSD = "sdd-datadisk"  %}
+{% set PDSTNDHHD = "hdd-backupdisk" %}
+
+
+
+# ---- SSD here first ------
+resources:
+- name: {{ PDSSD }}
+  type: compute.beta.disk
+  properties:
+    zone: {{ properties["zone"] }}
+    sizeGb: 100
+    type: projects/cmp3747m-oreilly-17666843/zones/europe-west2-b/diskTypes/pd-ssd
+
+# ---- HDD Backup drive 
+- name: {{ PDSTNDHHD }}
+  type: compute.beta.disk
+  properties:
+    zone: europe-west2-b
+    sizeGb: 500
+    type: projects/cmp3747m-oreilly-17666843/zones/europe-west2-b/diskTypes/pd-standard
+
+- name: {{ env["name"] }}
+  type: compute.v1.instance
+  properties:
+    zone: {{ properties["zone"] }}
+    machineType: https://www.googleapis.com/compute/v1/projects/{{ env["project"] }}/zones/{{ properties["zone"] }}/machineTypes/{{ properties["machineType"] }}
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage:  https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-10-buster-v20201014
+    networkInterfaces:
+    - network: {{ properties["network"] }}
+      subnetwork: {{ properties["subnetwork"] }}
+    serviceAccounts:
+    - email: $(ref.{{ properties['serviceAccountId'] }}.email)
+      scopes:
+      - "https://www.googleapis.com/auth/cloud-platform"
+
+# ---- SSD here first ------
+    - deviceName: {{ PDSSD }}
+      type: PERSISTENT
+      source: $(ref.{{ PDSSD }}.selfLink)
+      autoDelete: true
+    networkInterfaces:
+    - network:  https://www.googleapis.com/compute/v1/projects/cmp3747m-oreilly-17666843/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+
+# ---- HDD Backup drive 
+    - deviceName: {{ PDSTNDHHD }}
+      type: PERSISTENT
+      source: $(ref.{{ PDSTNDHHD }}.selfLink)
+      autoDelete: true
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/cmp3747m-oreilly-17666843/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT

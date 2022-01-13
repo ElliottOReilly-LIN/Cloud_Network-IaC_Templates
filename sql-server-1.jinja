@@ -1,0 +1,24 @@
+
+resources:
+- name: cloud-sql-server-instace
+  type: compute.v1.instance
+  properties:
+    zone: europe-west2-b
+    machineType: projects/cmp3747m-oreilly-17666843/zones/europe-west2-b/machineTypes/e2-standard-2
+    networkInterfaces:
+    - network: {{ properties["network"] }}
+      subnetwork: {{ properties["subnetwork"] }}
+      accessConfigs:
+      - name: External_NAT
+        type: ONE_TO_ONE_NAT
+        networkTier: PREMIUM
+    disks:
+    - type: PERSISTENT
+      deviceName: sql-server-instace
+      mode: READ_WRITE
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: projects/windows-sql-cloud/global/images/sql-2019-standard-windows-2019-dc-v20201110
+        diskType: projects/cmp3747m-oreilly-17666843/zones/europe-west2-b/diskTypes/pd-standard
+        diskSizeGb: 50

@@ -1,0 +1,35 @@
+{# 1st network will accommodate VM's in London, whereas the second network
+   will host VM instances in Frankfurt for isolation purposes. #}
+
+# 1st VPC ---------------------------------------
+resources:
+- name: vpc-network-1
+  type: vpc-network-1.jinja
+- name: subnet-a
+  type: subnet-a.jinja
+
+- name: firewall-1
+  type: firewall-1-template.jinja
+  properties:
+    network: $(ref.vpc-network-1.selfLink)
+    IPProtocol: TCP
+
+# 2nd VPC ---------------------------------------
+
+- name: vpc-network-2
+  type: vpc-network-2.jinja
+- name: subnet-b
+  type: subnet-b.jinja
+
+- name: firewall-2
+  type: firewall-2-template.jinja
+  properties:
+    network: $(ref.vpc-network-2.selfLink)
+    IPProtocol: TCP
+
+
+# VPC network peering will support the secure connection between regions
+
+
+
+# Cloud VPN will provide the on premisis secure remote connection to the VPC network  

@@ -1,0 +1,66 @@
+# This instance belongs to Frankfurt and  will have anSSD 
+# Persistant disk, as well as standadard HHD for backup. This VM Template 
+# also contains a number of environment variables resources captured from the YAML file 
+
+# Setup varible names for muliple use
+
+{% set PDSSD2 = "sdd-datadisk2"  %}
+{% set PDSTNDHHD2 = "hdd-backupdisk2" %}
+
+
+
+# ---- SSD here first ------
+resources:
+- name: {{ PDSSD2 }}
+  type: compute.beta.disk
+  properties:
+    zone: {{ properties["zone"] }}
+    sizeGb: 100
+    type: projects/cmp3747m-oreilly-17666843/zones/europe-west2-b/diskTypes/pd-ssd
+
+# ---- HDD Backup drive 
+- name: {{ PDSTNDHHD2 }}
+  type: compute.beta.disk
+  properties:
+    zone: europe-west3-c
+    sizeGb: 500
+    type: projects/cmp3747m-oreilly-17666843/zones/europe-west2-b/diskTypes/pd-standard
+
+
+- name: {{ env["name"] }}
+  type: compute.v1.instance
+  properties:
+    zone: {{ properties["zone"] }}
+    machineType: https://www.googleapis.com/compute/v1/projects/{{ env["project"] }}/zones/{{ properties["zone"] }}/machineTypes/{{ properties["machineType"] }}
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage:  https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-10-buster-v20201112
+    networkInterfaces:
+    - network: {{ properties["network"] }}
+      subnetwork: {{ properties["subnetwork"] }}
+
+# ---- SSD here first ------
+    - deviceName: {{ PDSSD2 }}
+      type: PERSISTENT
+      source: $(ref.{{ PDSSD2 }}.selfLink)
+      autoDelete: true
+    networkInterfaces:
+    - network:  https://www.googleapis.com/compute/v1/projects/cmp3747m-oreilly-17666843/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+
+# ---- HDD Backup drive 
+    - deviceName: {{ PDSTNDHHD2 }}
+      type: PERSISTENT
+      source: $(ref.{{ PDSTNDHHD2 }}.selfLink)
+      autoDelete: true
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/cmp3747m-oreilly-17666843/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT

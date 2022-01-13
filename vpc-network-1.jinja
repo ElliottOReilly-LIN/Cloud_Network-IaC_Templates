@@ -1,0 +1,10 @@
+resources:
+- name: vpc-network-1
+  type: compute.v1.network
+  properties:
+    decription: London Branch - VPC Network to host a Windows Server VM instance group
+    region: europe-west2-b
+    routingMode: GLOBAL
+      # Global routing allows me to dynamically learn routes 
+      # to and from both regions with a single VPN 
+    autoCreateSubnetworks: false

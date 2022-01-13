@@ -1,0 +1,18 @@
+resources:
+- name: subnet-a
+  type: compute.v1.subnetwork
+  properties:
+    enableFlowLogs: true
+    # Subnet range in the London region
+    ipCidrRange: 10.154.0.0/20
+    network: $(ref.vpc-network-1.selfLink)
+    privateIpGoogleAccess: true
+    region: europe-west2
+    secondaryIpRanges: []
+    mtu: 1460
+   # Allow the creation of flow logs to monitor the data flow
+    logConfig:
+      aggregationInterval: INTERVAL_1_MIN
+      enable: true
+      flowSampling: 0.5
+      metadata: INCLUDE_ALL_METADATA

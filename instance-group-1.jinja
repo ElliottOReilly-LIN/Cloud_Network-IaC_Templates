@@ -1,0 +1,31 @@
+resources:
+  - name: instance-group-1
+    type: compute.v1.instanceGroup
+    properties: 
+      instanceTemplate: instance-template-1
+      baseInstanceName: instance-group-1
+      targetSize: 1
+
+      {# Note - It has not been possible to set up multi-zonal
+         distibution with deployment manager due to key mapping issues.
+         A future attempt may be acheived by looping through an array of zones #}
+
+      #distributionPolicy: 
+      #zones:
+
+      zone: europe-west2-c    
+      target: projects/cmp3747m-oreilly-17666843/regions/europe-west2/instanceGroupManagers/instance-group-1
+      region: europe-west2
+      kind: compute#autoscaler
+
+      # Note - autoscaling doesn't appear to be activiting in this template??
+      autoscalingPolicy: 
+        cpuUtilization: 
+          utilizationTarget: 0.6
+        mode: ON
+        coolDownPeriodSec: 60
+        minNumReplicas: 1
+        maxNumReplicas: 6
+
+
+
